@@ -1,0 +1,33 @@
+// src/components/cart/cart-icon-button.tsx
+'use client';
+
+import { useState } from 'react';
+import { ShoppingBag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useCartStore } from '@/lib/cart-store';
+import { CartSheet } from './cart-sheet';
+
+export function CartIconButton() {
+  const [open, setOpen] = useState(false);
+  const totalQuantity = useCartStore((s) => s.cart?.totalQuantity ?? 0);
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label={`Cart, ${totalQuantity} items`}
+        onClick={() => setOpen(true)}
+        className="relative"
+      >
+        <ShoppingBag className="h-5 w-5" />
+        {totalQuantity > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+            {totalQuantity}
+          </span>
+        )}
+      </Button>
+      <CartSheet open={open} onOpenChange={setOpen} />
+    </>
+  );
+}
