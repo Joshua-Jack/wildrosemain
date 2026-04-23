@@ -11,30 +11,33 @@ const shopImages = getSiteImageList("heroShop");
 const teamImages = getSiteImageList("heroTeam");
 const collectiveBg = getSiteImageOne("heroCollective").src;
 
+const pickImage = (list: typeof shopImages, i: number) =>
+  list[i]?.src ?? list[0]?.src ?? "";
+
 const SHOP_TILES = [
   {
-    image: shopImages[0].src,
+    image: pickImage(shopImages, 0),
     label: "Headwear",
     tone: "accent" as const,
     area: "feature" as const,
     href: "/shop?category=headwear",
   },
   {
-    image: shopImages[1].src,
+    image: pickImage(shopImages, 1),
     label: "Tops",
     tone: "light" as const,
     area: "smallA" as const,
     href: "/shop?category=tops",
   },
   {
-    image: shopImages[2].src,
+    image: pickImage(shopImages, 2),
     label: "Outerwear",
     tone: "dark" as const,
     area: "tall" as const,
     href: "/shop?category=outerwear",
   },
   {
-    image: shopImages[3].src,
+    image: pickImage(shopImages, 3),
     label: "Bottoms & Accessories",
     tone: "light" as const,
     area: "smallB" as const,
@@ -44,27 +47,27 @@ const SHOP_TILES = [
 
 const TEAM_TILES = [
   {
-    image: teamImages[0].src,
+    image: pickImage(teamImages, 0),
     area: "feature" as const,
     href: "/athletes",
   },
   {
-    image: teamImages[1].src,
+    image: pickImage(teamImages, 1),
     area: "smallA" as const,
     href: "/athletes",
   },
   {
-    image: teamImages[2].src,
+    image: pickImage(teamImages, 2),
     area: "smallC" as const,
     href: "/athletes",
   },
   {
-    image: teamImages[3].src,
+    image: pickImage(teamImages, 3),
     area: "smallB" as const,
     href: "/athletes",
   },
   {
-    image: teamImages[4].src,
+    image: pickImage(teamImages, 4),
     area: "smallD" as const,
     href: "/athletes",
   },

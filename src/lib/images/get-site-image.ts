@@ -19,7 +19,7 @@ export function getSiteImage(key: SiteImageKey): ResolvedImage | ResolvedImage[]
   if (Array.isArray(entry)) {
     return entry.map(resolve);
   }
-  return resolve(entry);
+  return resolve(entry as ImageSlot);
 }
 
 /** Narrowed helpers — cleaner call sites at the cost of a bit of duplication. */
