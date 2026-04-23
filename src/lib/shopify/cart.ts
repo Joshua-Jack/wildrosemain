@@ -22,7 +22,7 @@ type RawCartMerchandise = {
   title: string;
   image: ShopifyImage | null;
   price: Money;
-  product: { handle: string };
+  product: { handle: string; title: string };
 };
 
 type RawCartLine = {
@@ -46,6 +46,7 @@ function normalizeLine(raw: RawCartLine): CartLine {
     quantity: raw.quantity,
     merchandiseId: raw.merchandise.id,
     title: raw.merchandise.title,
+    productTitle: raw.merchandise.product.title,
     productHandle: raw.merchandise.product.handle,
     image: raw.merchandise.image,
     price: raw.merchandise.price,

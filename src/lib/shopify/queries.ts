@@ -6,6 +6,8 @@ export const PRODUCT_FRAGMENT = /* GraphQL */ `
     title
     description
     descriptionHtml
+    productType
+    publishedAt
     tags
     priceRange {
       minVariantPrice { amount currencyCode }
@@ -77,7 +79,7 @@ export const CART_FRAGMENT = /* GraphQL */ `
               title
               image { url altText width height }
               price { amount currencyCode }
-              product { handle }
+              product { handle title }
             }
           }
         }

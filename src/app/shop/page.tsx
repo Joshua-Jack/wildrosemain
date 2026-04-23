@@ -1,43 +1,35 @@
-// src/app/shop/page.tsx
-import type { Metadata } from 'next';
-import { getAllProducts } from '@/lib/shopify/products';
-import { ProductCard } from '@/components/shop/product-card';
-
-export const revalidate = 60;
+import type { Metadata } from "next";
+import { getShopProducts } from "@/lib/shop/get-products";
+import { isShopCategory } from "@/lib/shop/types";
+import { ShopHero } from "@/components/shop/shop-hero";
+import { ShopBrowser } from "@/components/shop/shop-browser";
 
 export const metadata: Metadata = {
-  title: 'Shop',
-  description: 'Shop Wild Rose athlete gear, drops, and tournament merch.',
+  title: "Shop",
+  description:
+    "Shop Wild Rose Collective gear — apparel, headwear, and accessories built for athletes.",
 };
 
-export default async function ShopPage() {
-  let products;
-  try {
-    products = await getAllProducts(100);
-  } catch (err) {
-    console.error('[shop] failed to load products', err);
-    return (
-      <div className="container px-4 py-16 text-center">
-        <h1 className="text-3xl font-bold mb-4">Shop</h1>
-        <p className="text-muted-foreground">
-          Store is temporarily unavailable. Try again in a moment.
-        </p>
-      </div>
-    );
-  }
+type SearchParams = { category?: string };
+
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const sp = await searchParams;
+  const initialCategory = isShopCategory(sp.category) ? sp.category : "all";
+  const products = await getShopProducts();
 
   return (
-    <div className="container px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8">Shop</h1>
-      {products.length === 0 ? (
-        <p className="text-muted-foreground">New drops coming soon.</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      )}
-    </div>
+    <>
+      <ShopHero
+        activeCategory={initialCategory}
+        totalCount={products.length}
+      />
+      <div className="mx-auto w-full max-w-[1400px] px-6 pt-10 pb-16 md:px-10 md:pt-14 md:pb-24">
+        <ShopBrowser products={products} initialCategory={initialCategory} />
+      </div>
+    </>
   );
 }

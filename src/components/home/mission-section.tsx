@@ -10,7 +10,7 @@ export async function MissionSection() {
   );
   const { content } = matter(file);
   return (
-    <section id="story" className="py-20 px-4 scroll-mt-20">
+    <section id="story" className="py-14 md:py-20 px-4 scroll-mt-20">
       <div className="max-w-3xl mx-auto prose dark:prose-invert">
         <MDXRemote source={content} />
       </div>

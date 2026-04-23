@@ -15,6 +15,8 @@ type RawProduct = {
   title: string;
   description: string;
   descriptionHtml: string;
+  productType: string;
+  publishedAt: string;
   tags: string[];
   priceRange: ShopifyProduct['priceRange'];
   featuredImage: ShopifyImage | null;
@@ -29,6 +31,8 @@ function normalizeProduct(raw: RawProduct): ShopifyProduct {
     title: raw.title,
     description: raw.description,
     descriptionHtml: raw.descriptionHtml,
+    productType: raw.productType,
+    publishedAt: raw.publishedAt,
     tags: raw.tags,
     priceRange: raw.priceRange,
     featuredImage: raw.featuredImage,

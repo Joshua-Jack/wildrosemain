@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 export function CustomGearCTA() {
   const agencyUrl = process.env.NEXT_PUBLIC_AGENCY_SITE_URL ?? "#";
   return (
-    <section className="py-20 px-4 bg-foreground text-background">
+    <section className="py-14 md:py-20 px-4 bg-foreground text-background">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">
           Need custom gear for your team?

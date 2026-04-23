@@ -1,6 +1,13 @@
 // src/lib/shopify/client.ts
-const STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;
-const STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
+// Storefront credentials. The token is public by design (it's the same one you
+// can paste into a Hydrogen storefront), so we accept either the server-only
+// SHOPIFY_* env or the browser-exposed NEXT_PUBLIC_SHOPIFY_* env. This lets
+// the same client work from server components AND browser-side cart mutations.
+const STORE_DOMAIN =
+  process.env.SHOPIFY_STORE_DOMAIN ?? process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+const STOREFRONT_TOKEN =
+  process.env.SHOPIFY_STOREFRONT_TOKEN ??
+  process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
 
 type GraphQLResponse<T> = {
   data?: T;

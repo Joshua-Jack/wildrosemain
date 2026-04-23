@@ -25,6 +25,8 @@ export type ShopifyProduct = {
   title: string;
   description: string;
   descriptionHtml: string;
+  productType: string;
+  publishedAt: string;
   tags: string[];
   priceRange: {
     minVariantPrice: Money;
@@ -41,7 +43,10 @@ export type CartLine = {
   id: string;
   quantity: number;
   merchandiseId: string;
+  /** Variant title — typically "S / Black" or "Default Title". */
   title: string;
+  /** Parent product title — what the customer recognizes. */
+  productTitle: string;
   productHandle: string;
   image: ShopifyImage | null;
   price: Money;

@@ -1,43 +1,30 @@
-import Link from 'next/link';
-import { NAV_LINKS } from './nav-links';
-import { Button } from '@/components/ui/button';
-import { CartIconButton } from '@/components/cart/cart-icon-button';
+"use client";
+
+import { useHeaderState } from "@/hooks/use-header-state";
+import { SiteLogo } from "./site-logo";
+import { MainNav } from "./main-nav";
+import { HeaderActions } from "./header-actions";
 
 export function SiteHeader() {
+  const { solid } = useHeaderState();
+  const tone = solid ? "dark" : "light";
   const agencyUrl =
-    process.env.NEXT_PUBLIC_AGENCY_SITE_URL ?? 'https://wildroseathletics.com';
+    process.env.NEXT_PUBLIC_AGENCY_SITE_URL ?? "https://wildroseathletics.com";
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <Link href="/" className="text-lg font-bold tracking-tight">
-          Wild Rose
-        </Link>
-
-        <nav className="hidden items-center gap-6 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="hidden sm:inline-flex"
-          >
-            <a href={agencyUrl} target="_blank" rel="noopener noreferrer">
-              Need custom gear?
-            </a>
-          </Button>
-          <CartIconButton />
+    <header
+      className={[
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        solid
+          ? "border-b border-border bg-background/85 backdrop-blur-md"
+          : "border-b border-transparent bg-transparent",
+      ].join(" ")}
+    >
+      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-6 px-6 md:h-[72px] md:px-10">
+        <SiteLogo tone={tone} />
+        <div className="flex items-center gap-8">
+          <MainNav tone={tone} />
+          <HeaderActions tone={tone} agencyUrl={agencyUrl} />
         </div>
       </div>
     </header>

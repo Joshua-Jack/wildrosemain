@@ -1,21 +1,18 @@
 import { Hero } from "@/components/home/hero";
-import { FeaturedDrops } from "@/components/home/featured-drops";
-import { TeamPreview } from "@/components/home/team-preview";
-import { MissionSection } from "@/components/home/mission-section";
-import { TournamentsStrip } from "@/components/home/tournaments-strip";
-import { CustomGearCTA } from "@/components/home/custom-gear-cta";
-import { ContactBand } from "@/components/home/contact-band";
+import { AboutSection } from "@/components/home/about-section";
+import { FeaturedProducts } from "@/components/home/featured-products";
+// import { FeatureCards } from "@/components/home/feature-cards";
+// import { ContactCTA } from "@/components/home/contact-cta";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <FeaturedDrops />
-      <TeamPreview />
-      <MissionSection />
-      <TournamentsStrip />
-      <CustomGearCTA />
-      <ContactBand />
+      <div data-hero-end aria-hidden className="h-px w-full" />
+      <AboutSection />
+      <FeaturedProducts />
+      {/* <FeatureCards /> */}
+      {/* <ContactCTA /> */}
     </>
   );
 }

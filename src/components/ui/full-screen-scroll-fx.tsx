@@ -59,6 +59,8 @@ export type FullScreenFXProps = {
   showProgress?: boolean;
   debug?: boolean;
   durations?: Durations;
+  /** Scroll distance (in vh) required to advance each section. Default 100. */
+  pinDurationVh?: number;
   reduceMotion?: boolean;
   smoothScroll?: boolean;
   bgTransition?: "fade" | "wipe";
@@ -87,6 +89,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       showProgress = true,
       debug = false,
       durations = { change: 0.7, snap: 800 },
+      pinDurationVh = 100,
       reduceMotion,
       smoothScroll = false,
       bgTransition = "fade",
@@ -127,7 +130,6 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
 
     const stRef = useRef<ScrollTrigger | null>(null);
     const lastIndexRef = useRef(index);
-    const isAnimatingRef = useRef(false);
     const isSnappingRef = useRef(false);
     const sectionTopRef = useRef<number[]>([]);
 
@@ -157,8 +159,16 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       if (!el) return;
       const top = el.offsetTop;
       const h = el.offsetHeight;
+      const viewportH = typeof window !== "undefined" ? window.innerHeight : 0;
+      // The ScrollTrigger pin progresses from 0→1 across (h - viewport),
+      // not across h. Snap targets live inside that range so we don't
+      // scroll past the pin end. Use the center of each section's
+      // progress slice so there's headroom on both sides.
+      const pinDistance = Math.max(0, h - viewportH);
       const arr: number[] = [];
-      for (let i = 0; i < total; i++) arr.push(top + (h * i) / total);
+      for (let i = 0; i < total; i++) {
+        arr.push(top + (pinDistance * (i + 0.5)) / total);
+      }
       sectionTopRef.current = arr;
     };
 
@@ -225,19 +235,33 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       computePositions();
       measureAndCenterLists(index, false);
 
+      // Snap to the center of each section's progress slice so the scroll
+      // naturally settles on a section after the user releases the wheel.
+      const snapCenters = Array.from(
+        { length: total },
+        (_, i) => (i + 0.5) / total
+      );
+
       const st = ScrollTrigger.create({
         trigger: fs,
         start: "top top",
         end: "bottom bottom",
         pin: fixed,
         pinSpacing: true,
+        snap: motionOff
+          ? undefined
+          : {
+              snapTo: snapCenters,
+              duration: { min: 0.2, max: 0.5 },
+              ease: "power2.inOut",
+              delay: 0.05,
+            },
         onUpdate: (self) => {
           if (motionOff || isSnappingRef.current) return;
           const prog = self.progress;
           const target = Math.min(total - 1, Math.floor(prog * total));
-          if (target !== lastIndexRef.current && !isAnimatingRef.current) {
-            const next = lastIndexRef.current + (target > lastIndexRef.current ? 1 : -1);
-            goTo(next, false);
+          if (target !== lastIndexRef.current) {
+            changeSection(target);
           }
           if (progressFillRef.current) {
             const p = (lastIndexRef.current / (total - 1 || 1)) * 100;
@@ -267,10 +291,15 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
     }, [total, initialIndex, motionOff, bgTransition, parallaxAmount]);
 
     const changeSection = (to: number) => {
-      if (to === lastIndexRef.current || isAnimatingRef.current) return;
+      if (to === lastIndexRef.current) return;
       const from = lastIndexRef.current;
       const down = to > from;
-      isAnimatingRef.current = true;
+      // Update index immediately so subsequent onUpdate ticks compare
+      // against the new target — previously this was gated behind the
+      // animation duration, which made fast scrolls feel stuck. GSAP
+      // automatically kills prior tweens on the same targets, so
+      // overlapping transitions are fine.
+      lastIndexRef.current = to;
 
       if (!isControlled) setLocalIndex(to);
       onIndexChange?.(to);
@@ -312,7 +341,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       if (bgTransition === "fade") {
         if (newBg) {
           gsap.set(newBg, { opacity: 0, scale: 1.04, yPercent: down ? 1 : -1 });
-          gsap.to(newBg, { opacity: 1, scale: 1, yPercent: 0, duration: D, ease: "power2.out" });
+          gsap.to(newBg, { opacity: 1, scale: 1, yPercent: 0, duration: D, ease: "power2.out", overwrite: "auto" });
         }
         if (prevBg) {
           gsap.to(prevBg, {
@@ -320,6 +349,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             yPercent: down ? -parallaxAmount : parallaxAmount,
             duration: D,
             ease: "power2.out",
+            overwrite: "auto",
           });
         }
       } else {
@@ -330,10 +360,10 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             scale: 1,
             yPercent: 0,
           });
-          gsap.to(newBg, { clipPath: "inset(0 0 0 0)", duration: D, ease: "power3.out" });
+          gsap.to(newBg, { clipPath: "inset(0 0 0 0)", duration: D, ease: "power3.out", overwrite: "auto" });
         }
         if (prevBg) {
-          gsap.to(prevBg, { opacity: 0, duration: D * 0.8, ease: "power2.out" });
+          gsap.to(prevBg, { opacity: 0, duration: D * 0.8, ease: "power2.out", overwrite: "auto" });
         }
       }
 
@@ -356,11 +386,6 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           duration: D * 0.6,
           ease: "power3.out",
         });
-      });
-
-      gsap.delayedCall(D, () => {
-        lastIndexRef.current = to;
-        isAnimatingRef.current = false;
       });
     };
 
@@ -563,7 +588,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             background: rgba(255,255,255,0.8); color: #000; padding: 6px 8px; font: 12px/1 monospace; border-radius: 4px;
           }
 
-          .fx-fixed-section { height: ${Math.max(1, total + 1)}00vh; position: relative; }
+          .fx-fixed-section { height: calc(100vh + ${Math.max(1, total) * pinDurationVh}vh); position: relative; }
           .fx-fixed { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: var(--fx-page-bg); }
 
           .fx-grid {
@@ -574,10 +599,12 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             position: relative;
             height: 100%;
             z-index: 2;
+            pointer-events: none;
           }
 
           .fx-bgs { position: absolute; inset: 0; background: var(--fx-stage-bg); z-index: 1; }
-          .fx-bg { position: absolute; inset: 0; }
+          .fx-bg { position: absolute; inset: 0; pointer-events: none; }
+          .fx-bg-overlay { pointer-events: none; }
           .fx-bg-img {
             position: absolute; inset: -10% 0 -10% 0;
             width: 100%; height: 120%; object-fit: cover;
@@ -600,12 +627,14 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             align-items: center;
             height: 100%;
             padding: 0 var(--fx-grid-px);
+            pointer-events: none;
           }
 
           .fx-left, .fx-right {
             height: 60vh;
             overflow: hidden;
             display: grid; align-content: center;
+            pointer-events: none;
           }
           .fx-left { justify-items: start; }
           .fx-right { justify-items: end; }
@@ -623,6 +652,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             font-size: clamp(1rem, 2.4vw, 1.8rem);
             user-select: none;
             cursor: pointer;
+            pointer-events: auto;
           }
           .fx-left-item.active, .fx-right-item.active { opacity: 1; }
           .fx-left-item.active { transform: translateX(10px); padding-left: 16px; }
