@@ -25,14 +25,35 @@ export const AthleteFrontmatterSchema = z.object({
   hometown: z.string().optional(),
   role: z.string().optional(),
   tagline: z.string().optional(),
+  /**
+   * Explicit hero image. Optional — if omitted, the loader will auto-construct
+   * a Supabase URL from the slug when `heroUploaded` is true. Set this field
+   * manually only when you need to point at a non-conventional path
+   * (external URL, different filename, etc.).
+   */
   heroImage: z
     .object({
       src: z.string().min(1),
       alt: z.string().min(1, 'heroImage.alt is required for accessibility'),
     })
     .optional(),
+  /**
+   * Flip to `true` once `athletes/<slug>/hero.jpg` has been uploaded to the
+   * Supabase `wildrosecollective` bucket. The loader will then serve that
+   * image as the hero automatically.
+   */
+  heroUploaded: z.boolean().optional(),
+  /**
+   * Number of gallery images uploaded to `athletes/<slug>/gallery-01.jpg …
+   * gallery-NN.jpg`. Leave unset or `0` until you've uploaded some.
+   */
+  galleryCount: z.number().int().min(0).optional(),
   socials: SocialsSchema.optional(),
   stats: AthleteStatsSchema.optional(),
+  /**
+   * Explicit gallery override. Usually you won't use this — `galleryCount`
+   * plus uploads to Supabase is the normal path.
+   */
   gallery: z
     .array(
       z.object({
