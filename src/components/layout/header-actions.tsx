@@ -24,7 +24,7 @@ export function HeaderActions({ tone, agencyUrl }: Props) {
       >
         Custom gear ↗
       </a>
-      <CartIconButton />
+      <CartIconButton tone={tone} />
     </div>
   );
 }

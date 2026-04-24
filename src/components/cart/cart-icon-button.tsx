@@ -7,9 +7,18 @@ import { useCartStore } from '@/lib/cart-store';
 import { useCartUI } from '@/lib/cart-ui-store';
 import { CartSheet } from './cart-sheet';
 
-export function CartIconButton() {
+type Props = {
+  tone?: 'light' | 'dark';
+};
+
+export function CartIconButton({ tone = 'dark' }: Props) {
   const totalQuantity = useCartStore((s) => s.cart?.totalQuantity ?? 0);
   const { open, setOpen, openCart } = useCartUI();
+
+  const colorClass =
+    tone === 'light'
+      ? 'text-white hover:bg-white/10 hover:text-white'
+      : 'text-foreground';
 
   return (
     <>
@@ -18,7 +27,7 @@ export function CartIconButton() {
         size="icon"
         aria-label={`Cart, ${totalQuantity} items`}
         onClick={openCart}
-        className="relative"
+        className={`relative ${colorClass}`}
       >
         <ShoppingBag className="h-5 w-5" />
         {totalQuantity > 0 && (
