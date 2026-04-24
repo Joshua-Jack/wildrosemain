@@ -9,7 +9,6 @@ import { AthleteHero } from '@/components/athlete/athlete-hero';
 import { AthleteBio } from '@/components/athlete/athlete-bio';
 import { AthleteStats } from '@/components/athlete/athlete-stats';
 import { AthleteGallery } from '@/components/athlete/athlete-gallery';
-import { AthleteGear } from '@/components/athlete/athlete-gear';
 
 export async function generateStaticParams() {
   const slugs = await loadAthleteSlugs();
@@ -49,7 +48,6 @@ export default async function AthleteProfilePage({
       <AthleteHero athlete={athlete} />
       <AthleteBio athlete={athlete} />
       <AthleteStats athlete={athlete} />
-      <AthleteGear athlete={athlete} />
       <AthleteGallery athlete={athlete} />
     </>
   );
