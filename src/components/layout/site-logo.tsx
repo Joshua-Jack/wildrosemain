@@ -21,7 +21,10 @@ export function SiteLogo({ tone }: Props) {
         width={1200}
         height={600}
         priority
-        className="h-10 w-auto md:h-12"
+        // Width-based sizing so the black and white logos render at the
+        // same visual size despite different aspect ratios (black = 2.02,
+        // white = 1.39). Height stays auto.
+        className="h-auto w-[80px] md:w-[96px]"
       />
     </Link>
   );

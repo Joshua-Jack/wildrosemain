@@ -4,6 +4,7 @@ import { useHeaderState } from "@/hooks/use-header-state";
 import { SiteLogo } from "./site-logo";
 import { MainNav } from "./main-nav";
 import { HeaderActions } from "./header-actions";
+import { MobileMenu } from "./mobile-menu";
 
 export function SiteHeader() {
   const { solid } = useHeaderState();
@@ -20,11 +21,12 @@ export function SiteHeader() {
           : "border-b border-transparent bg-transparent",
       ].join(" ")}
     >
-      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-6 px-6 md:h-[72px] md:px-10">
+      <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-4 px-5 md:h-[84px] md:px-10">
         <SiteLogo tone={tone} />
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
           <MainNav tone={tone} />
           <HeaderActions tone={tone} agencyUrl={agencyUrl} />
+          <MobileMenu tone={tone} agencyUrl={agencyUrl} />
         </div>
       </div>
     </header>
