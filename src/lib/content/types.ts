@@ -1,7 +1,7 @@
 // src/lib/content/types.ts
 import { z } from 'zod';
 
-export const TierSchema = z.enum(['athlete', 'reserve', 'recruit']);
+export const TierSchema = z.enum(['all-star', 'athlete', 'reserve', 'recruit']);
 export type Tier = z.infer<typeof TierSchema>;
 
 export const SocialsSchema = z.object({
@@ -25,10 +25,12 @@ export const AthleteFrontmatterSchema = z.object({
   hometown: z.string().optional(),
   role: z.string().optional(),
   tagline: z.string().optional(),
-  heroImage: z.object({
-    src: z.string().min(1),
-    alt: z.string().min(1, 'heroImage.alt is required for accessibility'),
-  }),
+  heroImage: z
+    .object({
+      src: z.string().min(1),
+      alt: z.string().min(1, 'heroImage.alt is required for accessibility'),
+    })
+    .optional(),
   socials: SocialsSchema.optional(),
   stats: AthleteStatsSchema.optional(),
   gallery: z

@@ -16,7 +16,7 @@ describe('loadAthleteFromFile', () => {
     expect(athlete.slug).toBe('test-athlete');
     expect(athlete.tier).toBe('athlete');
     expect(athlete.shopifyTag).toBe('athlete:test-athlete');
-    expect(athlete.heroImage.alt).toBe('Test Athlete portrait');
+    expect(athlete.heroImage?.alt).toBe('Test Athlete portrait');
     expect(athlete.bodyMdx).toContain('This is the **bio** content in MDX.');
   });
 

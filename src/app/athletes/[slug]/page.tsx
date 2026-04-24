@@ -30,7 +30,7 @@ export async function generateMetadata(
     openGraph: {
       title: athlete.name,
       description: athlete.tagline ?? `${athlete.name} — Wild Rose Collective`,
-      images: [athlete.heroImage.src],
+      images: athlete.heroImage?.src ? [athlete.heroImage.src] : undefined,
     },
   };
 }
