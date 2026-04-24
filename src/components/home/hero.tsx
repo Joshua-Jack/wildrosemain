@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { FullScreenScrollFX } from "@/components/ui/full-screen-scroll-fx";
 import {
@@ -198,21 +200,75 @@ const SECTIONS = [
   },
 ];
 
+function MobileHero() {
+  return (
+    <section className="relative h-[88svh] min-h-[560px] w-full overflow-hidden bg-neutral-950 text-white">
+      <Image
+        src={collectiveBg}
+        alt="Wild Rose Collective"
+        fill
+        sizes="100vw"
+        priority
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/30" />
+      <div className="relative flex h-full flex-col justify-end px-6 pb-12 pt-24">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/70">
+          Wild Rose Collective
+        </p>
+        <h1 className="mt-3 text-[40px] font-black uppercase leading-[0.95] tracking-tight">
+          Athletes.
+          <br />
+          Built for.
+          <br />
+          Together.
+        </h1>
+        <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/75">
+          Apparel, headwear, and gear made with the collective. New drops
+          every season.
+        </p>
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          <Link
+            href="/shop"
+            className="inline-flex items-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition active:scale-[0.98]"
+          >
+            Shop the drops →
+          </Link>
+          <Link
+            href="/athletes"
+            className="inline-flex items-center rounded-full border border-white/30 px-5 py-3 text-sm font-semibold text-white/90 transition active:scale-[0.98]"
+          >
+            Meet the team
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Hero() {
   const [index, setIndex] = useState(0);
   const hideFrame = index === 1 || index === 2;
 
   return (
-    <div className={hideFrame ? "hero-hide-frame" : undefined}>
-      <FullScreenScrollFX
-        sections={SECTIONS}
-        header={<span className="block">Wild Rose</span>}
-        footer={<span className="block">Athletics</span>}
-        showProgress={false}
-        durations={{ change: 0.7, snap: 800 }}
-        pinDurationVh={40}
-        onIndexChange={setIndex}
-      />
+    <>
+      {/* Mobile: simple, single-screen hero with CTAs. */}
+      <div className="md:hidden">
+        <MobileHero />
+      </div>
+
+      {/* Desktop / tablet: full scroll-snap narrative hero. */}
+      <div className={`hidden md:block ${hideFrame ? "hero-hide-frame" : ""}`}>
+        <FullScreenScrollFX
+          sections={SECTIONS}
+          header={<span className="block">Wild Rose</span>}
+          footer={<span className="block">Athletics</span>}
+          showProgress={false}
+          durations={{ change: 0.7, snap: 800 }}
+          pinDurationVh={40}
+          onIndexChange={setIndex}
+        />
+      </div>
       <style jsx global>{`
         .fx-end {
           display: none !important;
@@ -249,6 +305,6 @@ export function Hero() {
           transition: opacity 0.5s ease;
         }
       `}</style>
-    </div>
+    </>
   );
 }

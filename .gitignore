@@ -43,4 +43,5 @@ next-env.d.ts
 
 # local test / debug artifacts
 .playwright-cli/
-hero-shop.png
+*.png
+!public/**/*.png

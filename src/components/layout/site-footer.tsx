@@ -22,10 +22,7 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 const NAV = [
-  { label: "Athletes", href: "/athletes" },
   { label: "Shop", href: "/shop" },
-  { label: "Tournaments", href: "/#tournaments" },
-  { label: "Story", href: "/#story" },
 ];
 
 const RESOURCES = [

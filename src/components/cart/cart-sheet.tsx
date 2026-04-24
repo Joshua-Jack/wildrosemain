@@ -31,7 +31,7 @@ export function CartSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+        className="flex !w-full flex-col gap-0 p-0 sm:!w-3/4 sm:max-w-md"
       >
         <SheetHeader className="border-b border-border px-6 py-4">
           <SheetTitle className="flex items-center gap-2 text-lg font-semibold">
